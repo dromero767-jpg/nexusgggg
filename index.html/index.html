@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusGG — Gaming Community</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050810;--bg2:#0a0f1e;--bg3:#0f1628;--panel:#111827;--border:#1e2d4a;--accent:#00d4ff;--accent2:#7c3aed;--accent3:#f59e0b;--gold:#fbbf24;--text:#e2e8f0;--muted:#64748b;--success:#10b981;--danger:#ef4444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+header{position:sticky;top:0;z-index:100;background:rgba(5,8,16,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;}
+.logo{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;}
+.logo span{-webkit-text-fill-color:var(--accent3);}
+nav{display:flex;gap:2rem;align-items:center;}
+nav a{color:var(--muted);text-decoration:none;font-size:.9rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:color .2s;}
+nav a:hover{color:var(--accent);}
+.hdr-actions{display:flex;gap:.75rem;align-items:center;}
+.btn{padding:.5rem 1.25rem;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;border:none;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),#5b21b6);color:#fff;box-shadow:0 0 20px rgba(124,58,237,.3);}
+.btn-primary:hover{box-shadow:0 0 30px rgba(124,58,237,.5);transform:translateY(-1px);}
+.btn-accent{background:linear-gradient(135deg,var(--accent),#0099bb);color:#000;font-weight:700;box-shadow:0 0 20px rgba(0,212,255,.3);}
+.btn-accent:hover{box-shadow:0 0 30px rgba(0,212,255,.5);transform:translateY(-1px);}
+.admin-bar{background:rgba(124,58,237,.08);border-bottom:1px solid rgba(124,58,237,.2);padding:.4rem 2rem;display:flex;align-items:center;gap:1rem;font-size:.75rem;color:#a78bfa;letter-spacing:1px;}
+.admin-pill{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.3);color:#a78bfa;padding:2px 10px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+/* Pages */
+#page-home{display:block;}
+#page-subforum,#page-topic{display:none;}
+.hero{padding:3rem 2rem 2rem;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.hero h1{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;line-height:1.15;margin-bottom:.75rem;}
+.hero h1 .c{color:var(--accent);}
+.hero h1 .p{color:var(--accent2);}
+.hero p{color:var(--muted);font-size:1rem;max-width:460px;line-height:1.6;}
+.hero-stats{display:flex;gap:2rem;margin-top:1.5rem;}
+.stat-n{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:700;color:var(--accent);}
+.stat-l{font-size:.72rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.wrap{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
+.layout{display:grid;grid-template-columns:1fr 300px;gap:2rem;align-items:start;}
+/* Forum rows */
+.fr{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:.9rem 1.1rem;display:grid;grid-template-columns:44px 1fr auto auto;align-items:center;gap:.9rem;margin-bottom:.5rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.fr::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background .2s;}
+.fr:hover{border-color:rgba(0,212,255,.3);background:#151e30;}
+.fr:hover::before{background:var(--accent);}
+.fr.locked{opacity:.7;}
+.fr.locked:hover::before{background:var(--accent3);}
+.fi{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.fi-blue{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);}
+.fi-green{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);}
+.fi-purple{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);}
+.fi-gold{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);}
+.fi-bronze{background:rgba(180,83,9,.2);border:1px solid rgba(180,83,9,.4);}
+.fi-silver{background:rgba(148,163,184,.2);border:1px solid rgba(148,163,184,.3);}
+.fr h3{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:.15rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.fr p{font-size:.78rem;color:var(--muted);}
+.fr-cnt{text-align:center;min-width:40px;}
+.fr-cnt-n{font-family:'Orbitron',monospace;font-size:.85rem;font-weight:700;color:var(--text);}
+.fr-cnt-l{font-size:.65rem;color:var(--muted);letter-spacing:1px;}
+.fr-last{text-align:right;min-width:100px;}
+.fr-last-t{font-size:.75rem;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fr-last-m{font-size:.68rem;color:var(--muted);}
+.lk-badge{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:var(--accent3);font-size:.6rem;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;text-transform:uppercase;}
+.vip-badge{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#a78bfa;font-size:.6rem;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;text-transform:uppercase;}
+.unlocked-badge{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:var(--success);font-size:.6rem;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;text-transform:uppercase;}
+.sec-label{font-family:'Orbitron',monospace;font-size:.68rem;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin:1.25rem 0 .6rem;}
+/* Sidebar */
+.sidebar{display:flex;flex-direction:column;gap:1.5rem;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.panel-hdr{padding:.85rem 1.15rem;border-bottom:1px solid var(--border);font-family:'Orbitron',monospace;font-size:.68rem;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;}
+.tier-row{padding:1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.9rem;cursor:pointer;transition:background .2s;}
+.tier-row:last-of-type{border-bottom:none;}
+.tier-row:hover{background:rgba(255,255,255,.03);}
+.tier-ico{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.t-free{background:rgba(100,116,139,.2);border:1px solid rgba(100,116,139,.3);}
+.t-bronze{background:rgba(180,83,9,.2);border:1px solid rgba(180,83,9,.4);}
+.t-silver{background:rgba(148,163,184,.2);border:1px solid rgba(148,163,184,.3);}
+.t-gold{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.4);}
+.t-legend{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(239,68,68,.2));border:1px solid rgba(124,58,237,.4);}
+.tier-info{flex:1;}
+.tier-name{font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;margin-bottom:.15rem;}
+.c-free{color:var(--muted);}.c-bronze{color:#f97316;}.c-silver{color:#94a3b8;}.c-gold{color:var(--gold);}.c-legend{background:linear-gradient(135deg,#a78bfa,#f87171);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tier-perks{font-size:.7rem;color:var(--muted);}
+.tier-price{text-align:right;flex-shrink:0;}
+.tier-price-n{font-family:'Orbitron',monospace;font-size:.95rem;font-weight:700;}
+.tier-price-p{font-size:.62rem;color:var(--muted);}
+.p-free{color:var(--muted);}.p-bronze{color:#f97316;}.p-silver{color:#94a3b8;}.p-gold{color:var(--gold);}.p-legend{color:#a78bfa;}
+.upg-btn{display:block;margin:1rem 1.1rem;width:calc(100% - 2.2rem);padding:.6rem;background:linear-gradient(135deg,var(--accent2),#5b21b6);color:#fff;border:none;border-radius:6px;font-family:'Orbitron',monospace;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;box-shadow:0 0 20px rgba(124,58,237,.3);}
+.upg-btn:hover{box-shadow:0 0 30px rgba(124,58,237,.5);transform:translateY(-1px);}
+.topic-row{padding:.8rem 1.15rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s;}
+.topic-row:last-child{border-bottom:none;}
+.topic-row:hover{background:rgba(255,255,255,.02);}
+.topic-row-t{font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:.15rem;}
+.topic-row-m{font-size:.7rem;color:var(--muted);}
+.topic-row-m span{color:var(--accent);}
+/* Subforum & Topic pages */
+.sf-wrap{max-width:900px;margin:0 auto;padding:2rem 2rem 4rem;}
+.sf-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+/* Comments */
+.comment-block{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:.75rem;display:flex;}
+.comment-user{width:140px;flex-shrink:0;padding:1rem;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:.4rem;background:rgba(0,0,0,.2);}
+.comment-body{flex:1;padding:1rem 1.25rem;font-size:.9rem;line-height:1.7;color:var(--text);white-space:pre-wrap;}
+.comment-ts{font-size:.68rem;color:var(--muted);margin-top:.5rem;}
+/* Tier badges */
+.tbadge{font-size:.58rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:3px;display:inline-block;}
+.tb-free{background:rgba(100,116,139,.2);border:1px solid rgba(100,116,139,.3);color:var(--muted);}
+.tb-bronze{background:rgba(180,83,9,.2);border:1px solid rgba(180,83,9,.4);color:#f97316;}
+.tb-silver{background:rgba(148,163,184,.2);border:1px solid rgba(148,163,184,.3);color:#94a3b8;}
+.tb-gold{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.4);color:var(--gold);}
+.tb-legend,.tb-admin{background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(239,68,68,.15));border:1px solid rgba(124,58,237,.4);color:#a78bfa;}
+/* Modals */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:2rem;width:90%;max-width:480px;position:relative;animation:su .2s ease;max-height:90vh;overflow-y:auto;}
+@keyframes su{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.modal-title{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;margin-bottom:.25rem;}
+.modal-sub{font-size:.85rem;color:var(--muted);margin-bottom:1.25rem;}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1;}
+.modal-close:hover{color:var(--text);}
+.fg{margin-bottom:1rem;}
+.fl{display:block;font-size:.72rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem;}
+.fi-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.6rem .9rem;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.93rem;outline:none;transition:border-color .2s;}
+.fi-input:focus{border-color:var(--accent);}
+.form-row{display:flex;gap:.75rem;margin-top:1.25rem;}
+.tier-feature-list{list-style:none;}
+.tier-feature-list li{font-size:.83rem;color:var(--muted);padding:.2rem 0;display:flex;align-items:center;gap:.5rem;}
+.tier-feature-list li::before{content:'✓';color:var(--accent);font-size:.78rem;flex-shrink:0;}
+.sel-tier{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.9rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.9rem;}
+.pay-btn{padding:.55rem;border-radius:6px;background:var(--bg2);border:1px solid var(--border);color:var(--muted);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.83rem;cursor:pointer;transition:all .2s;}
+.pay-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.07);}
+.btc-box{background:var(--bg2);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:1.25rem;text-align:center;}
+.btc-amt{font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:700;color:var(--accent3);}
+.btc-usd{font-size:.78rem;color:var(--muted);margin-bottom:.9rem;}
+.btc-qr{width:150px;height:150px;margin:0 auto .9rem;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.btc-addr-wrap{display:flex;align-items:center;gap:.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.45rem .7rem;margin-bottom:.65rem;text-align:left;}
+.btc-addr{font-family:monospace;font-size:.68rem;color:var(--text);flex:1;word-break:break-all;}
+.copy-btn{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);color:var(--accent);border-radius:4px;padding:3px 8px;font-size:.68rem;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.btc-timer{font-size:.75rem;color:var(--accent3);margin-bottom:.4rem;}
+.btc-note{font-size:.68rem;color:var(--muted);line-height:1.5;}
+.rename-input{background:transparent;border:none;border-bottom:1px solid var(--accent);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:600;outline:none;padding:0 0 2px;}
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--panel);border:1px solid var(--success);border-radius:8px;padding:.7rem 1.2rem;font-size:.83rem;color:var(--success);z-index:300;display:none;}
+.toast.show{display:block;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div class="admin-bar" id="admin-bar" style="display:none">
+  <span class="admin-pill" id="admin-pill">⚡ Admin Mode</span>
+  <span style="color:var(--muted);font-size:.72rem" id="admin-bar-tip">Double-click any category name to rename it</span>
+</div>
+
+<header>
+  <div class="logo" id="site-logo" onclick="goHome()">NEXUS<span>GG</span></div>
+  <nav>
+    <a onclick="goHome()">Forums</a>
+    <a onclick="openModal('membershipModal')">Membership</a>
+  </nav>
+  <div class="hdr-actions">
+    <button class="btn btn-accent create-topic-btn" onclick="openCreateTopic()">✏️ Create Topic</button>
+    <button class="btn btn-ghost" id="btn-signin" onclick="openModal('loginModal')">Sign In</button>
+    <button class="btn btn-primary" id="btn-join" onclick="openModal('registerModal')">Join Free</button>
+    <button class="btn btn-ghost" id="btn-user-menu" style="display:none" onclick="openModal('userMenuModal')">👤 Account</button>
+  </div>
+</header>
+
+<!-- ════ HOME PAGE ════ -->
+<div id="page-home">
+  <div class="hero">
+    <div>
+      <h1 id="hero-title" data-editable contenteditable="false"><span class="c">Level Up</span> Your<br><span class="p">Gaming</span> Community</h1>
+      <p id="hero-subtitle" data-editable contenteditable="false">Join thousands of gamers. Discuss strategies, share clips, find teammates, and unlock exclusive content.</p>
+      <div class="hero-stats">
+        <div><div class="stat-n">—</div><div class="stat-l">Members</div></div>
+        <div><div class="stat-n">—</div><div class="stat-l">Posts</div></div>
+        <div><div class="stat-n">—</div><div class="stat-l">Online</div></div>
+      </div>
+    </div>
+    <button class="btn btn-accent" onclick="openModal('registerModal')" style="padding:1rem 2rem;font-size:1rem;">JOIN NOW →</button>
+  </div>
+
+  <div class="wrap">
+    <div class="layout">
+      <!-- Forum list -->
+      <div>
+        <div class="sec-label">📋 General</div>
+
+        <div class="fr" onclick="goSubforum('news')">
+          <div class="fi fi-blue">📣</div>
+          <div><h3 id="cat-news" ondblclick="event.stopPropagation();startRename('cat-news')">News &amp; Announcements</h3><p data-editable>Official updates, patch notes, and community news</p></div>
+          <div class="fr-cnt"><div class="fr-cnt-n" id="count-news">—</div><div class="fr-cnt-l">Topics</div></div>
+          <div class="fr-last"><div class="fr-last-t">Click to view</div><div class="fr-last-m">General</div></div>
+        </div>
+
+        <div class="fr" onclick="goSubforum('general')">
+          <div class="fi fi-blue">💬</div>
+          <div><h3 id="cat-general" ondblclick="event.stopPropagation();startRename('cat-general')">General Discussion</h3><p data-editable>Talk about anything gaming related</p></div>
+          <div class="fr-cnt"><div class="fr-cnt-n" id="count-general">—</div><div class="fr-cnt-l">Topics</div></div>
+          <div class="fr-last"><div class="fr-last-t">Click to view</div><div class="fr-last-m">General</div></div>
+        </div>
+
+        <div class="fr" onclick="goSubforum('intros')">
+          <div class="fi fi-green">👋</div>
+          <div><h3 id="cat-intros" ondblclick="event.stopPropagation();startRename('cat-intros')">Introductions</h3><p data-editable>New here? Introduce yourself!</p></div>
+          <div class="fr-cnt"><div class="fr-cnt-n" id="count-intros">—</div><div class="fr-cnt-l">Topics</div></div>
+          <div class="fr-last"><div class="fr-last-t">Click to view</div><div class="fr-last-m">General</div></div>
+        </div>
+
+        <div class="fr" onclick="goSubforum('trading')">
+          <div class="fi fi-green">🤝</div>
+          <div><h3 id="cat-trading" ondblclick="event.stopPropagation();startRename('cat-trading')">Trading &amp; Marketplace</h3><p data-editable>Buy, sell, and trade in-game items</p></div>
+          <div class="fr-cnt"><div class="fr-cnt-n" id="count-trading">—</div><div class="fr-cnt-l">Topics</div></div>
+          <div class="fr-last"><div class="fr-last-t">Click to view</div><div class="fr-last-m">General</div></div>
+        </div>
+
+        <div class="sec-label">🔒 Members Only</div>
+
+        <div class="fr" id="row-bronze" onclick="tryAccessPaid('bronze')">
+          <div class="fi fi-bronze">🥉</div>
+          <div><h3>Bronze Lounge <span id="badge-bronze" class="lk-badge">🔒 Bronze+</span></h3><p data-editable>Exclusive discussions for Bronze members and above</p></div>
+          <div class="fr-cnt"><div class="fr-cnt-n" id="count-bronze">—</div><div class="fr-cnt-l">Topics</div></div>
+          <div class="fr-last"><div class="fr-last-t" id="last-bronze">Members only</div><div class="fr-last-m">Bronze+ access</div></div>
+        </div>
+
+        <div class="fr" id="row-silver" onclick="tryAccessPaid('silver')">
+          <div class="fi fi-silver">🥈</div>
+          <div><h3>Silver Syndicate <span id="badge-silver" class="lk-badge">🔒 Silver+</span></h3><p data-editable>Strategy deep-dives, early previews, and silver perks</p></div>
+          <div class="fr-cnt"><div class="fr-cnt-n" id="count-silver">—</div><div class="fr-cnt-l">Topics</div></div>
+          <div class="fr-last"><div class="fr-last-t" id="last-silver">Members only</div><div class="fr-last-m">Silver+ access</div></div>
+        </div>
+
+        <div class="fr" id="row-gold" onclick="tryAccessPaid('gold')">
+          <div class="fi fi-gold">🥇</div>
+          <div><h3>Gold War Room <span id="badge-gold" class="lk-badge">🔒 Gold+</span></h3><p data-editable>Pro strats, coaching sessions, and insider meta</p></div>
+          <div class="fr-cnt"><div class="fr-cnt-n" id="count-gold">—</div><div class="fr-cnt-l">Topics</div></div>
+          <div class="fr-last"><div class="fr-last-t" id="last-gold">Members only</div><div class="fr-last-m">Gold+ access</div></div>
+        </div>
+
+        <div class="fr" id="row-legend" onclick="tryAccessPaid('legend')">
+          <div class="fi fi-purple">👑</div>
+          <div><h3>Legend Vault <span id="badge-legend" class="vip-badge">👑 Legend</span></h3><p data-editable>Dev AMAs, early access drops, and legend-only content</p></div>
+          <div class="fr-cnt"><div class="fr-cnt-n" id="count-legend">—</div><div class="fr-cnt-l">Topics</div></div>
+          <div class="fr-last"><div class="fr-last-t" id="last-legend">Members only</div><div class="fr-last-m">Legend only</div></div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="panel">
+          <div class="panel-hdr">🎖 Membership <span style="font-size:.62rem;color:var(--accent);cursor:pointer" onclick="openModal('membershipModal')">VIEW ALL →</span></div>
+          <div class="tier-row"><div class="tier-ico t-free">🎮</div><div class="tier-info"><div class="tier-name c-free">Free</div><div class="tier-perks">General forums access</div></div><div class="tier-price"><div class="tier-price-n p-free">$0</div><div class="tier-price-p">forever</div></div></div>
+          <div class="tier-row"><div class="tier-ico t-bronze">🥉</div><div class="tier-info"><div class="tier-name c-bronze">Bronze</div><div class="tier-perks">Bronze Lounge · No ads</div></div><div class="tier-price"><div class="tier-price-n p-bronze">$5</div><div class="tier-price-p">/month</div></div></div>
+          <div class="tier-row"><div class="tier-ico t-silver">🥈</div><div class="tier-info"><div class="tier-name c-silver">Silver</div><div class="tier-perks">Silver Syndicate · Priority</div></div><div class="tier-price"><div class="tier-price-n p-silver">$12</div><div class="tier-price-p">/month</div></div></div>
+          <div class="tier-row"><div class="tier-ico t-gold">🥇</div><div class="tier-info"><div class="tier-name c-gold">Gold</div><div class="tier-perks">Gold War Room · Coaching</div></div><div class="tier-price"><div class="tier-price-n p-gold">$25</div><div class="tier-price-p">/month</div></div></div>
+          <div class="tier-row"><div class="tier-ico t-legend">👑</div><div class="tier-info"><div class="tier-name c-legend">Legend</div><div class="tier-perks">All access · Dev AMAs</div></div><div class="tier-price"><div class="tier-price-n p-legend">$50</div><div class="tier-price-p">/month</div></div></div>
+          <button class="upg-btn" onclick="openModal('membershipModal')">⚡ UPGRADE NOW</button>
+        </div>
+        <div class="panel">
+          <div class="panel-hdr">🔥 Recent Topics</div>
+          <div id="hot-list"><div style="padding:1rem 1.15rem;font-size:.8rem;color:var(--muted)">No topics yet.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SUBFORUM PAGE ════ -->
+<div id="page-subforum">
+  <div class="sf-wrap">
+    <div class="sf-hdr">
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <button class="btn btn-ghost" style="padding:.4rem .9rem;font-size:.78rem" onclick="goHome()">← Back</button>
+        <span id="sf-icon" style="font-size:1.4rem"></span>
+        <div>
+          <div id="sf-title" style="font-family:'Orbitron',monospace;font-size:.95rem;font-weight:700;color:var(--text)"></div>
+          <div id="sf-desc" style="font-size:.72rem;color:var(--muted)"></div>
+        </div>
+      </div>
+      <button class="btn btn-accent create-topic-btn" style="padding:.55rem 1.2rem" onclick="openCreateTopic()">✏️ New Topic</button>
+    </div>
+    <div id="sf-list"></div>
+    <div id="sf-empty" style="text-align:center;padding:4rem 1rem;background:var(--panel);border:1px solid var(--border);border-radius:10px">
+      <div style="font-size:2.5rem;margin-bottom:.75rem">📭</div>
+      <div style="font-family:'Orbitron',monospace;font-size:.8rem;font-weight:700;color:var(--muted);letter-spacing:2px;margin-bottom:.6rem">NO TOPICS YET</div>
+      <div style="font-size:.88rem;color:var(--muted);margin-bottom:1.25rem">Be the first to start a conversation!</div>
+      <button class="btn btn-primary create-topic-btn" onclick="openCreateTopic()">✏️ Create First Topic</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ TOPIC PAGE ════ -->
+<div id="page-topic">
+  <div class="sf-wrap">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <button class="btn btn-ghost" style="padding:.4rem .9rem;font-size:.78rem" onclick="goBack()">← Back</button>
+      <button class="btn btn-accent create-topic-btn" style="padding:.5rem 1rem;font-size:.8rem" onclick="openCreateTopic()">✏️ New Topic</button>
+    </div>
+    <!-- Main post -->
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.5rem">
+      <div style="padding:1.2rem 1.5rem;border-bottom:1px solid var(--border)">
+        <h2 id="tp-title" style="font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.25rem"></h2>
+        <div id="tp-meta" style="font-size:.72rem;color:var(--muted)"></div>
+      </div>
+      <div style="display:flex">
+        <div style="width:140px;flex-shrink:0;padding:1.1rem .9rem;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:.45rem;background:rgba(0,0,0,.2)">
+          <div id="tp-avatar"></div>
+          <div id="tp-author" style="font-weight:700;font-size:.82rem;text-align:center;color:var(--text)"></div>
+          <div id="tp-tier"></div>
+        </div>
+        <div style="flex:1;padding:1.4rem">
+          <div id="tp-body" style="font-size:.93rem;line-height:1.8;color:var(--text);white-space:pre-wrap"></div>
+        </div>
+      </div>
+    </div>
+    <div id="tp-reply-count" style="font-family:'Orbitron',monospace;font-size:.68rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:.75rem">0 REPLIES</div>
+    <div id="tp-comments"></div>
+    <!-- Reply box -->
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:1.25rem">
+      <div style="padding:.7rem 1.15rem;border-bottom:1px solid var(--border);font-family:'Orbitron',monospace;font-size:.68rem;letter-spacing:2px;color:var(--muted)">POST A REPLY</div>
+      <div style="display:flex">
+        <div style="width:140px;flex-shrink:0;padding:.9rem;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:.4rem;background:rgba(0,0,0,.2)">
+          <div id="tp-reply-avatar"></div>
+          <div id="tp-reply-name" style="font-size:.75rem;font-weight:600;color:var(--text);text-align:center"></div>
+          <div id="tp-reply-badge"></div>
+        </div>
+        <div style="flex:1;padding:.9rem">
+          <textarea class="fi-input" id="tp-reply-text" rows="4" style="resize:vertical;width:100%;margin-bottom:.7rem" placeholder="Write your reply..."></textarea>
+          <div style="display:flex;justify-content:flex-end">
+            <button class="btn btn-primary" onclick="submitReply()">POST REPLY</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MODALS ════ -->
+
+<!-- Create Topic -->
+<div class="modal-overlay" id="createTopicModal">
+  <div class="modal" style="max-width:540px">
+    <button class="modal-close" onclick="closeModal('createTopicModal')">✕</button>
+    <div class="modal-title">✏️ Create New Topic</div>
+    <div class="modal-sub">Pick a category, write your title and post</div>
+    <div class="fg"><label class="fl">Category</label>
+      <select class="fi-input" id="ct-cat" style="cursor:pointer">
+        <option value="news">📣 News &amp; Announcements</option>
+        <option value="general">💬 General Discussion</option>
+        <option value="intros">👋 Introductions</option>
+        <option value="trading">🤝 Trading &amp; Marketplace</option>
+        <option value="bronze">🥉 Bronze Lounge</option>
+        <option value="silver">🥈 Silver Syndicate</option>
+        <option value="gold">🥇 Gold War Room</option>
+        <option value="legend">👑 Legend Vault</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Topic Title</label><input class="fi-input" id="ct-title" type="text" placeholder="Enter a clear, descriptive title" autocomplete="off"></div>
+    <div class="fg"><label class="fl">Body</label><textarea class="fi-input" id="ct-body" rows="5" style="resize:vertical;width:100%" placeholder="Write your post here..."></textarea></div>
+    <div class="form-row">
+      <button class="btn btn-accent" style="flex:1;padding:.75rem;font-size:.9rem" onclick="submitCreateTopic()">POST TOPIC</button>
+      <button class="btn btn-ghost" style="padding:.75rem 1rem" onclick="closeModal('createTopicModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Login -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <div class="modal-title">Welcome Back</div>
+    <div class="modal-sub">Sign in to your NexusGG account</div>
+    <div class="fg"><label class="fl">Email</label><input class="fi-input" id="login-user" type="email" placeholder="your@email.com"></div>
+    <div class="fg"><label class="fl">Password</label><input class="fi-input" id="login-pass" type="password" placeholder="••••••••"></div>
+    <div class="form-row">
+      <button class="btn btn-primary" style="flex:1;padding:.75rem" onclick="tryLogin()">SIGN IN</button>
+      <button class="btn btn-ghost" style="padding:.75rem 1rem" onclick="closeModal('loginModal');openModal('registerModal')">Register</button>
+    </div>
+  </div>
+</div>
+
+<!-- Register -->
+<div class="modal-overlay" id="registerModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('registerModal')">✕</button>
+    <div class="modal-title">Join NexusGG</div>
+    <div class="modal-sub">Create your free account</div>
+    <div class="fg"><label class="fl">Username</label><input class="fi-input" id="reg-user" type="text" placeholder="Choose a username"></div>
+    <div class="fg"><label class="fl">Email</label><input class="fi-input" id="reg-email" type="email" placeholder="your@email.com"></div>
+    <div class="fg"><label class="fl">Password</label><input class="fi-input" id="reg-pass" type="password" placeholder="At least 6 characters"></div>
+    <div class="form-row">
+      <button class="btn btn-accent" style="flex:1;padding:.75rem" onclick="registerUser()">CREATE ACCOUNT</button>
+    </div>
+  </div>
+</div>
+
+<!-- Membership -->
+<div class="modal-overlay" id="membershipModal">
+  <div class="modal" style="max-width:540px">
+    <button class="modal-close" onclick="closeModal('membershipModal')">✕</button>
+    <div class="modal-title">Choose Your Tier</div>
+    <div class="modal-sub">Unlock exclusive forums, perks, and community features</div>
+    <div id="tier-select"></div>
+    <button class="btn btn-primary" style="width:100%;padding:.8rem;margin-top:.5rem" onclick="handleUpgrade()">⚡ UPGRADE NOW</button>
+    <p style="font-size:.7rem;color:var(--muted);margin-top:.75rem;text-align:center">Cancel anytime. Billed monthly.</p>
+  </div>
+</div>
+
+<!-- Payment -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal" style="max-width:500px">
+    <button class="modal-close" onclick="closeModal('paymentModal')">✕</button>
+    <div class="modal-title" id="pay-title">Complete Your Upgrade</div>
+    <div class="modal-sub" id="pay-sub"></div>
+    <div class="sel-tier" id="pay-tier-display"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.1rem">
+      <button class="pay-btn active" id="btn-card" onclick="switchPay('card')">💳 Credit Card</button>
+      <button class="pay-btn" id="btn-btc" onclick="switchPay('btc')">₿ Bitcoin</button>
+    </div>
+    <div id="card-form">
+      <div class="fg"><label class="fl">Card Number</label><input class="fi-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+        <div class="fg"><label class="fl">Expiry</label><input class="fi-input" type="text" placeholder="MM/YY" maxlength="5"></div>
+        <div class="fg"><label class="fl">CVV</label><input class="fi-input" type="text" placeholder="123" maxlength="3"></div>
+      </div>
+      <div class="fg"><label class="fl">Name on Card</label><input class="fi-input" type="text" placeholder="Full name"></div>
+      <div class="form-row">
+        <button class="btn btn-accent" style="flex:1;padding:.75rem" onclick="activateMembership()">PAY &amp; ACTIVATE</button>
+        <button class="btn btn-ghost" style="padding:.75rem 1rem" onclick="closeModal('paymentModal');openModal('membershipModal')">Back</button>
+      </div>
+    </div>
+    <div id="btc-form" style="display:none">
+      <div class="btc-box">
+        <div style="font-size:.72rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:.5rem">Send exact amount to this address</div>
+        <div class="btc-amt" id="btc-amount">0.00041 BTC</div>
+        <div class="btc-usd" id="btc-usd">≈ $25.00 USD</div>
+        <div class="btc-qr"><canvas id="btc-qr-canvas" width="150" height="150"></canvas></div>
+        <div class="btc-addr-wrap"><div class="btc-addr">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div><button class="copy-btn" onclick="copyAddr()">📋 Copy</button></div>
+        <div class="btc-timer">⏳ Expires in <span id="btc-countdown">15:00</span></div>
+        <div class="btc-note">Send only BTC. Detected automatically after 1 confirmation (~10 min).</div>
+      </div>
+      <div class="form-row" style="margin-top:1rem">
+        <button class="btn btn-primary" style="flex:1;padding:.75rem" onclick="activateMembership()">I'VE SENT THE PAYMENT</button>
+        <button class="btn btn-ghost" style="padding:.75rem 1rem" onclick="closeModal('paymentModal');openModal('membershipModal')">Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Panel -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal" style="max-width:540px">
+    <button class="modal-close" onclick="closeModal('adminModal')">✕</button>
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem">
+      <div style="width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(239,68,68,.2));border:1px solid rgba(124,58,237,.4);display:flex;align-items:center;justify-content:center;font-size:1.3rem">👑</div>
+      <div><div class="modal-title" style="margin:0">Admin Panel</div><div class="modal-sub" style="margin:0">Full control over NexusGG</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.1rem">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.9rem;text-align:center">
+        <div style="font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:700;color:var(--accent)" id="admin-total-topics">—</div>
+        <div style="font-size:.68rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Total Topics</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.9rem;text-align:center">
+        <div style="font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:700;color:var(--gold)" id="admin-total-members">—</div>
+        <div style="font-size:.68rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Members</div>
+      </div>
+    </div>
+    <div style="font-family:'Orbitron',monospace;font-size:.68rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:.6rem">Quick Actions</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.1rem">
+      <button class="btn btn-ghost" style="padding:.6rem;font-size:.76rem" onclick="closeModal('adminModal');openCreateTopic()">✏️ Create Topic</button>
+      <button class="btn btn-ghost" style="padding:.6rem;font-size:.76rem" onclick="closeModal('adminModal');openModal('editTiersModal')">💰 Edit Tiers</button>
+      <button class="btn btn-ghost" style="padding:.6rem;font-size:.76rem" onclick="closeModal('adminModal');toggleEditMode()">✏️ Edit Site Text</button>
+      <button class="btn btn-ghost" style="padding:.6rem;font-size:.76rem" onclick="showToast('🚫 User banned!')">🚫 Ban User</button>
+    </div>
+    <button class="btn btn-ghost" style="width:100%;padding:.6rem;font-size:.76rem;color:var(--danger);border-color:rgba(239,68,68,.3)" onclick="adminLogout()">Sign Out</button>
+  </div>
+</div>
+
+<!-- Edit Tiers -->
+<div class="modal-overlay" id="editTiersModal">
+  <div class="modal" style="max-width:560px">
+    <button class="modal-close" onclick="closeModal('editTiersModal')">✕</button>
+    <div class="modal-title">💰 Edit Membership Tiers</div>
+    <div class="modal-sub">Update names, prices, and perks for each tier</div>
+    <div id="tier-editor-list"></div>
+    <div class="form-row">
+      <button class="btn btn-accent" style="flex:1;padding:.75rem" onclick="saveTiers()">💾 SAVE CHANGES</button>
+      <button class="btn btn-ghost" style="padding:.75rem 1rem" onclick="closeModal('editTiersModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ STATE ══
+var isAdmin = false;
+var currentSubforum = null;
+var currentTopicId = null;
+var topicIdCounter = 1;
+var currentUser = { name: 'Guest', tier: 'free' };
+var topics = { news:[], general:[], intros:[], trading:[], bronze:[], silver:[], gold:[], legend:[] };
+var comments = {};
+
+// ══ SUPABASE DB ══
+function loadTopics(){
+  sb.from('topics').select('*').order('created_at', { ascending: true }).then(function(res){
+    if (res.error){ console.error('loadTopics:', res.error); return; }
+    // Reset
+    Object.keys(topics).forEach(function(k){ topics[k] = []; });
+    (res.data || []).forEach(function(row){
+      if (topics[row.subforum] !== undefined){
+        topics[row.subforum].push({
+          id:       row.id,
+          title:    row.title,
+          body:     row.body,
+          author:   row.author,
+          tier:     row.tier,
+          subforum: row.subforum,
+          time:     timeAgo(row.created_at)
+        });
+      }
+    });
+    updateCounts();
+  });
+}
+
+function loadComments(topicId, callback){
+  sb.from('comments').select('*').eq('topic_id', topicId).order('created_at', { ascending: true }).then(function(res){
+    if (res.error){ console.error('loadComments:', res.error); return; }
+    comments[topicId] = (res.data || []).map(function(row){
+      return { id: row.id, author: row.author, tier: row.tier, body: row.body, time: timeAgo(row.created_at) };
+    });
+    if (callback) callback();
+  });
+}
+
+function saveTopicToDB(t, callback){
+  sb.from('topics').insert({
+    title:    t.title,
+    body:     t.body,
+    author:   t.author,
+    tier:     t.tier,
+    subforum: t.subforum
+  }).select().then(function(res){
+    if (res.error){ showToast('❌ Error saving topic'); console.error(res.error); return; }
+    if (res.data && res.data[0]){
+      t.id = res.data[0].id;
+      t.time = 'Just now';
+    }
+    if (callback) callback();
+  });
+}
+
+function saveCommentToDB(topicId, c, callback){
+  sb.from('comments').insert({
+    topic_id: topicId,
+    author:   c.author,
+    tier:     c.tier,
+    body:     c.body
+  }).then(function(res){
+    if (res.error){ showToast('❌ Error saving reply'); console.error(res.error); return; }
+    if (callback) callback();
+  });
+}
+
+function deleteTopicFromDB(id){
+  sb.from('topics').delete().eq('id', id).then(function(res){
+    if (res.error) console.error('deleteTopicFromDB:', res.error);
+  });
+}
+
+function deleteCommentFromDB(id){
+  sb.from('comments').delete().eq('id', id).then(function(res){
+    if (res.error) console.error('deleteCommentFromDB:', res.error);
+  });
+}
+
+function timeAgo(ts){
+  if (!ts) return 'Just now';
+  var diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
+  if (diff < 60)  return 'Just now';
+  if (diff < 3600) return Math.floor(diff/60)+'m ago';
+  if (diff < 86400) return Math.floor(diff/3600)+'h ago';
+  return Math.floor(diff/86400)+'d ago';
+}
+
+var SF = {
+  news:    { icon:'📣', label:'News & Announcements',  desc:'Official updates and patch notes' },
+  general: { icon:'💬', label:'General Discussion',    desc:'Talk about anything gaming related' },
+  intros:  { icon:'👋', label:'Introductions',         desc:'New here? Say hello!' },
+  trading: { icon:'🤝', label:'Trading & Marketplace', desc:'Buy, sell, and trade in-game items' },
+  bronze:  { icon:'🥉', label:'Bronze Lounge',         desc:'Exclusive for Bronze members and above' },
+  silver:  { icon:'🥈', label:'Silver Syndicate',      desc:'Exclusive for Silver members and above' },
+  gold:    { icon:'🥇', label:'Gold War Room',         desc:'Exclusive for Gold members and above' },
+  legend:  { icon:'👑', label:'Legend Vault',          desc:'Exclusive for Legend members only' },
+};
+
+var TIER_RANK = { free:0, bronze:1, silver:2, gold:3, legend:4, admin:99 };
+var PAID_RANK = { bronze:1, silver:2, gold:3, legend:4 };
+
+var tiers = [
+  { id:'free',   emoji:'🎮', name:'Free',   cls:'c-free',   ico:'t-free',   price:'$0',  period:'forever', perks:['General forums access','Basic profile','Community chat'] },
+  { id:'bronze', emoji:'🥉', name:'Bronze', cls:'c-bronze', ico:'t-bronze', price:'$5',  period:'/month',  perks:['Bronze Lounge access','No ads','Custom member tag'] },
+  { id:'silver', emoji:'🥈', name:'Silver', cls:'c-silver', ico:'t-silver', price:'$12', period:'/month',  perks:['Everything in Bronze','Silver Syndicate','Priority support'] },
+  { id:'gold',   emoji:'🥇', name:'Gold',   cls:'c-gold',   ico:'t-gold',   price:'$25', period:'/month',  perks:['Everything in Silver','Gold War Room','Coaching sessions'] },
+  { id:'legend', emoji:'👑', name:'Legend', cls:'c-legend', ico:'t-legend', price:'$50', period:'/month',  perks:['All access','Legend Vault','Dev AMAs','Early features'] },
+];
+var selectedTier = 'gold';
+
+// ══ HELPERS ══
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function bdg(tier){
+  var map = { free:'tb-free', bronze:'tb-bronze', silver:'tb-silver', gold:'tb-gold', legend:'tb-legend', admin:'tb-admin' };
+  var labels = { free:'Free', bronze:'Bronze', silver:'Silver', gold:'Gold', legend:'Legend', admin:'👑 Admin' };
+  return '<span class="tbadge '+(map[tier]||'tb-free')+'">'+(labels[tier]||'Free')+'</span>';
+}
+
+function avt(name, tier, sz){
+  sz = sz || 44;
+  var colors = { free:'#64748b', bronze:'#f97316', silver:'#94a3b8', gold:'#fbbf24', legend:'#a78bfa', admin:'#a78bfa' };
+  var bgs = { free:'rgba(100,116,139,0.2)', bronze:'rgba(180,83,9,0.2)', silver:'rgba(148,163,184,0.2)', gold:'rgba(251,191,36,0.15)', legend:'rgba(124,58,237,0.2)', admin:'rgba(124,58,237,0.2)' };
+  var c = colors[tier] || colors.free;
+  var bg = bgs[tier] || bgs.free;
+  var r = sz > 40 ? 12 : 7;
+  var letter = name ? name[0].toUpperCase() : '?';
+  return '<div style="width:'+sz+'px;height:'+sz+'px;border-radius:'+r+'px;background:'+bg+';border:1px solid '+c+';display:flex;align-items:center;justify-content:center;font-size:'+Math.round(sz*.38)+'px;font-weight:700;color:'+c+';flex-shrink:0">'+letter+'</div>';
+}
+
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+// ══ NAVIGATION ══
+function goHome(){
+  currentSubforum = null; currentTopicId = null;
+  document.getElementById('page-home').style.display = 'block';
+  document.getElementById('page-subforum').style.display = 'none';
+  document.getElementById('page-topic').style.display = 'none';
+  window.scrollTo(0,0);
+}
+
+function goSubforum(id){
+  currentSubforum = id; currentTopicId = null;
+  var sf = SF[id];
+  document.getElementById('sf-icon').textContent  = sf.icon;
+  document.getElementById('sf-title').textContent = sf.label;
+  document.getElementById('sf-desc').textContent  = sf.desc;
+  renderSfList();
+  document.getElementById('page-home').style.display = 'none';
+  document.getElementById('page-subforum').style.display = 'block';
+  document.getElementById('page-topic').style.display = 'none';
+  window.scrollTo(0,0);
+}
+
+function goBack(){
+  if (currentSubforum) goSubforum(currentSubforum);
+  else goHome();
+}
+
+function renderSfList(){
+  var list = topics[currentSubforum] || [];
+  var listEl  = document.getElementById('sf-list');
+  var emptyEl = document.getElementById('sf-empty');
+  if (list.length === 0){
+    listEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+  } else {
+    emptyEl.style.display = 'none';
+    listEl.innerHTML = list.slice().reverse().map(function(t){
+      var rc = (comments[t.id] || []).length;
+      return '<div class="fr" onclick="goTopic(\''+t.id+'\')" style="grid-template-columns:auto 1fr auto;cursor:pointer">'
+        + '<div>'+avt(t.author, t.tier, 36)+'</div>'
+        + '<div><h3 style="font-family:Rajdhani,sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.12rem">'+esc(t.title)+'</h3>'
+        + '<p style="font-size:.72rem;color:var(--muted)">by <span style="color:var(--accent)">'+esc(t.author)+'</span> '+bdg(t.tier)+' · '+t.time+'</p></div>'
+        + '<div style="text-align:right;flex-shrink:0"><div style="font-family:Orbitron,monospace;font-size:.82rem;font-weight:700">'+rc+'</div><div style="font-size:.62rem;color:var(--muted)">replies</div></div>'
+        + '</div>';
+    }).join('');
+  }
+  updateCounts();
+}
+
+function goTopic(id){
+  var t = null;
+  Object.keys(topics).forEach(function(sf){ topics[sf].forEach(function(x){ if(x.id === id) t = x; }); });
+  if (!t) return;
+  currentTopicId = id;
+  if (!comments[id]) comments[id] = [];
+  document.getElementById('tp-title').textContent  = t.title;
+  document.getElementById('tp-meta').textContent   = 'Posted in '+SF[t.subforum].label+' · '+t.time;
+  document.getElementById('tp-avatar').innerHTML   = avt(t.author, t.tier, 52);
+  document.getElementById('tp-author').textContent = t.author;
+  document.getElementById('tp-tier').innerHTML     = bdg(t.tier);
+  document.getElementById('tp-body').textContent   = t.body;
+  var ut = isAdmin ? 'admin' : currentUser.tier;
+  document.getElementById('tp-reply-avatar').innerHTML = avt(currentUser.name, ut, 38);
+  document.getElementById('tp-reply-name').textContent = currentUser.name;
+  document.getElementById('tp-reply-badge').innerHTML  = bdg(ut);
+  document.getElementById('page-home').style.display = 'none';
+  document.getElementById('page-subforum').style.display = 'none';
+  document.getElementById('page-topic').style.display = 'block';
+  window.scrollTo(0,0);
+  // Load comments from Supabase
+  loadComments(id, function(){ renderComments(); });
+}
+
+function renderComments(){
+  var list = comments[currentTopicId] || [];
+  document.getElementById('tp-reply-count').textContent = list.length+(list.length===1?' REPLY':' REPLIES');
+  var el = document.getElementById('tp-comments');
+  if (list.length === 0){
+    el.innerHTML = '<div style="text-align:center;padding:2rem;background:var(--panel);border:1px solid var(--border);border-radius:8px;font-size:.83rem;color:var(--muted)">No replies yet — be the first!</div>';
+    return;
+  }
+  el.innerHTML = list.map(function(c, i){
+    return '<div class="comment-block">'
+      + '<div class="comment-user">'+avt(c.author,c.tier,40)
+      + '<div style="font-size:.78rem;font-weight:700;margin-top:.3rem;text-align:center;color:var(--text)">'+esc(c.author)+'</div>'+bdg(c.tier)+'</div>'
+      + '<div class="comment-body">'+esc(c.body)+'<div class="comment-ts">'+c.time+'</div>'
+      + (isAdmin ? '<button onclick="delComment('+i+')" style="margin-top:.4rem;font-size:.65rem;padding:2px 8px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--danger);border-radius:3px;cursor:pointer">🗑 Delete</button>' : '')
+      + '</div></div>';
+  }).join('');
+}
+
+function submitReply(){
+  var body = document.getElementById('tp-reply-text').value.trim();
+  if (!body){ showToast('❌ Write something first'); return; }
+  var c = { author:currentUser.name, tier:isAdmin?'admin':currentUser.tier, body:body, time:'Just now' };
+  saveCommentToDB(currentTopicId, c, function(){
+    if (!comments[currentTopicId]) comments[currentTopicId] = [];
+    comments[currentTopicId].push(c);
+    document.getElementById('tp-reply-text').value = '';
+    renderComments();
+    showToast('✅ Reply posted!');
+  });
+}
+
+function delComment(i){
+  var c = comments[currentTopicId][i];
+  if (c && c.id) deleteCommentFromDB(c.id);
+  comments[currentTopicId].splice(i,1);
+  renderComments();
+  showToast('🗑 Deleted');
+}
+
+// ══ CREATE TOPIC ══
+function openCreateTopic(){
+  if (!isAdmin){ showToast('🔒 Only admins can create topics'); return; }
+  var sel = document.getElementById('ct-cat');
+  if (sel && currentSubforum) sel.value = currentSubforum;
+  document.getElementById('ct-title').value = '';
+  document.getElementById('ct-body').value  = '';
+  document.getElementById('createTopicModal').classList.add('open');
+}
+
+function submitCreateTopic(){
+  var sf    = document.getElementById('ct-cat').value;
+  var title = document.getElementById('ct-title').value.trim();
+  var body  = document.getElementById('ct-body').value.trim();
+  if (!title){ showToast('❌ Please enter a topic title'); return; }
+  // Check paid forum access
+  if (PAID_RANK[sf] && !canAccess(sf)){ showToast('🔒 Upgrade to post in this forum'); return; }
+  var tier = isAdmin ? 'admin' : currentUser.tier;
+  var t = { title:title, body:body||'(No content)', author:currentUser.name, tier:tier, subforum:sf };
+  document.getElementById('createTopicModal').classList.remove('open');
+  showToast('⏳ Posting...');
+  saveTopicToDB(t, function(){
+    topics[sf].push(t);
+    currentSubforum = sf;
+    updateCounts();
+    goTopic(t.id);
+    showToast('✅ Posted in '+SF[sf].label+'!');
+  });
+}
+
+// ══ COUNTS & HOT LIST ══
+function updateCounts(){
+  Object.keys(topics).forEach(function(k){
+    var el = document.getElementById('count-'+k);
+    if (el) el.textContent = topics[k].length > 0 ? topics[k].length : '—';
+  });
+  updatePaidRows();
+  renderHot();
+  var total = 0;
+  Object.keys(topics).forEach(function(k){ total += topics[k].length; });
+  var te = document.getElementById('admin-total-topics');
+  if (te) te.textContent = total || '—';
+}
+
+function renderHot(){
+  var all = [];
+  Object.keys(topics).forEach(function(sf){ topics[sf].forEach(function(t){ all.push(t); }); });
+  var el = document.getElementById('hot-list');
+  if (!el) return;
+  if (all.length === 0){ el.innerHTML = '<div style="padding:1rem 1.15rem;font-size:.8rem;color:var(--muted)">No topics yet.</div>'; return; }
+  el.innerHTML = all.slice().reverse().slice(0,5).map(function(t){
+    return '<div class="topic-row" onclick="goSubforum(\''+t.subforum+'\');goTopic(\''+t.id+'\')">'
+      + '<div class="topic-row-t">'+esc(t.title)+'</div>'
+      + '<div class="topic-row-m"><span>'+esc(t.author)+'</span> · '+t.time+' · '+SF[t.subforum].label+'</div>'
+      + '</div>';
+  }).join('');
+}
+
+// ══ PAID FORUM ACCESS ══
+function canAccess(sf){
+  if (isAdmin) return true;
+  var need = PAID_RANK[sf] || 0;
+  var have = TIER_RANK[currentUser.tier] || 0;
+  return have >= need;
+}
+
+function tryAccessPaid(sf){
+  if (canAccess(sf)){
+    goSubforum(sf);
+  } else {
+    selectedTier = sf;
+    openModal('membershipModal');
+    showToast('🔒 Upgrade to '+sf.charAt(0).toUpperCase()+sf.slice(1)+' to access this forum');
+  }
+}
+
+function updatePaidRows(){
+  ['bronze','silver','gold','legend'].forEach(function(sf){
+    var row   = document.getElementById('row-'+sf);
+    var badge = document.getElementById('badge-'+sf);
+    if (!row) return;
+    if (canAccess(sf)){
+      row.classList.remove('locked');
+      row.style.opacity = '1';
+      if (badge){ badge.className='unlocked-badge'; badge.textContent='✅ Unlocked'; }
+    } else {
+      row.classList.add('locked');
+      row.style.opacity = '.7';
+      if (badge){
+        badge.className = sf==='legend' ? 'vip-badge' : 'lk-badge';
+        badge.textContent = sf==='legend' ? '👑 Legend' : '🔒 '+sf.charAt(0).toUpperCase()+sf.slice(1)+'+';
+      }
+    }
+  });
+}
+
+function activateMembership(){
+  currentUser.tier = selectedTier;
+  closeModal('paymentModal');
+  showToast('🎉 '+selectedTier.charAt(0).toUpperCase()+selectedTier.slice(1)+' membership activated! Forums unlocked.');
+  updatePaidRows();
+}
+
+// ══ MODALS ══
+function openModal(id){
+  if (id==='membershipModal') renderTiers();
+  if (id==='editTiersModal') renderTierEditor();
+  var el = document.getElementById(id);
+  if (el) el.classList.add('open');
+}
+function closeModal(id){
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(function(el){
+  el.addEventListener('click', function(e){ if (e.target===el) el.classList.remove('open'); });
+});
+
+// ══ TIERS ══
+function renderTiers(){
+  var c = document.getElementById('tier-select');
+  if (!c) return;
+  c.innerHTML = tiers.filter(function(t){ return t.id!=='free'; }).map(function(t){
+    var sel = selectedTier===t.id;
+    return '<div class="tier-row" onclick="selectTier(\''+t.id+'\')" style="border-radius:8px;margin-bottom:.4rem;border:1px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'rgba(0,212,255,.05)':'transparent')+'">'
+      + '<div class="tier-ico '+t.ico+'">'+t.emoji+'</div>'
+      + '<div class="tier-info"><div class="tier-name '+t.cls+'">'+t.name+'</div><div class="tier-perks">'+t.perks.slice(0,2).join(' · ')+'</div></div>'
+      + '<div class="tier-price"><div class="tier-price-n p-'+t.id+'">'+t.price+'</div><div class="tier-price-p">'+t.period+'</div></div>'
+      + '</div>';
+  }).join('');
+}
+
+function selectTier(id){ selectedTier=id; renderTiers(); }
+
+function handleUpgrade(){
+  var t = tiers.find(function(x){ return x.id===selectedTier; });
+  if (!t || t.id==='free') return;
+  document.getElementById('pay-title').textContent = 'Upgrade to '+t.name;
+  document.getElementById('pay-sub').textContent   = "You're upgrading to "+t.name+' — '+t.price+t.period;
+  document.getElementById('pay-tier-display').innerHTML =
+    '<div class="tier-ico '+t.ico+'" style="width:48px;height:48px;font-size:1.4rem">'+t.emoji+'</div>'
+    + '<div><div class="tier-name '+t.cls+'" style="font-size:.95rem;margin-bottom:.4rem">'+t.name+' Membership</div>'
+    + '<ul class="tier-feature-list">'+t.perks.map(function(p){ return '<li>'+p+'</li>'; }).join('')+'</ul></div>';
+  closeModal('membershipModal');
+  openModal('paymentModal');
+  switchPay('card');
+  updateBtcAmt();
+}
+
+// ══ TIER EDITOR ══
+function renderTierEditor(){
+  var c = document.getElementById('tier-editor-list');
+  if (!c) return;
+  c.innerHTML = tiers.filter(function(t){ return t.id!=='free'; }).map(function(t){
+    return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:.75rem">'
+      + '<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem">'
+      + '<div class="tier-ico '+t.ico+'">'+t.emoji+'</div>'
+      + '<div class="tier-name '+t.cls+'">'+t.name+'</div></div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">'
+      + '<div class="fg" style="margin:0"><label class="fl">Name</label><input class="fi-input" id="te-name-'+t.id+'" value="'+esc(t.name)+'"></div>'
+      + '<div class="fg" style="margin:0"><label class="fl">Price</label><input class="fi-input" id="te-price-'+t.id+'" value="'+esc(t.price)+'"></div>'
+      + '</div>'
+      + '<div class="fg" style="margin-top:.6rem;margin-bottom:0"><label class="fl">Perks (one per line)</label>'
+      + '<textarea class="fi-input" id="te-perks-'+t.id+'" rows="3" style="resize:vertical;width:100%">'+t.perks.join('\n')+'</textarea></div>'
+      + '</div>';
+  }).join('');
+}
+
+function saveTiers(){
+  tiers.forEach(function(t){
+    if (t.id==='free') return;
+    var n = document.getElementById('te-name-'+t.id);
+    var p = document.getElementById('te-price-'+t.id);
+    var pk = document.getElementById('te-perks-'+t.id);
+    if (n)  t.name  = n.value.trim()  || t.name;
+    if (p)  t.price = p.value.trim()  || t.price;
+    if (pk) t.perks = pk.value.split('\n').map(function(x){ return x.trim(); }).filter(Boolean);
+  });
+  closeModal('editTiersModal');
+  showToast('✅ Tiers updated!');
+}
+
+// ══ AUTH ══
+// ══ SUPABASE ══
+// Replace these two values with your own from supabase.com → Settings → API
+var SUPABASE_URL  = 'YOUR_SUPABASE_URL';
+var SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY';
+var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// Admin username — set this to whatever account you want to be admin
+var ADMIN_USERNAME = 'admin';
+
+// Restore session on page load
+sb.auth.getSession().then(function(res){
+  if (res.data && res.data.session){
+    var meta = res.data.session.user.user_metadata;
+    var username = meta.username || res.data.session.user.email;
+    currentUser = { name: username, tier: meta.tier || 'free' };
+    isAdmin = (username === ADMIN_USERNAME);
+    updateUI();
+  }
+});
+
+// Listen for auth changes (login/logout from other tabs)
+sb.auth.onAuthStateChange(function(event, session){
+  if (event === 'SIGNED_IN' && session){
+    var meta = session.user.user_metadata;
+    var username = meta.username || session.user.email;
+    currentUser = { name: username, tier: meta.tier || 'free' };
+    isAdmin = (username === ADMIN_USERNAME);
+    updateUI();
+  }
+  if (event === 'SIGNED_OUT'){
+    currentUser = { name: 'Guest', tier: 'free' };
+    isAdmin = false;
+    updateUI();
+  }
+});
+
+function updateUI(){
+  var adminBar = document.getElementById('admin-bar');
+  var btnSignin = document.getElementById('btn-signin');
+  var btnJoin   = document.getElementById('btn-join');
+  var btnUser   = document.getElementById('btn-user-menu');
+
+  if (currentUser.name !== 'Guest'){
+    if (isAdmin){
+      // Admin user
+      btnSignin.textContent = '👑 Admin Panel';
+      btnSignin.onclick = function(){ openModal('adminModal'); };
+      btnSignin.style.display = '';
+      btnJoin.style.display = 'none';
+      btnUser.style.display = 'none';
+      adminBar.style.display = 'flex';
+      document.getElementById('admin-pill').textContent = '👑 Admin Logged In';
+    } else {
+      // Regular logged-in user
+      btnSignin.style.display = 'none';
+      btnJoin.style.display = 'none';
+      btnUser.style.display = '';
+      adminBar.style.display = 'none';
+      // Update user menu info
+      var nm = document.getElementById('user-menu-name');
+      var tr = document.getElementById('user-menu-tier');
+      if (nm) nm.textContent = currentUser.name;
+      if (tr) tr.textContent = currentUser.tier.charAt(0).toUpperCase() + currentUser.tier.slice(1);
+    }
+  } else {
+    // Guest
+    btnSignin.textContent = 'Sign In';
+    btnSignin.onclick = function(){ openModal('loginModal'); };
+    btnSignin.style.display = '';
+    btnJoin.style.display = '';
+    btnUser.style.display = 'none';
+    adminBar.style.display = 'none';
+    // Turn off edit mode if active
+    if (editModeActive) toggleEditMode();
+  }
+  updatePaidRows();
+  refreshTopicButtons();
+}
+
+var ADMIN_USERNAME_CHECK = ADMIN_USERNAME;
+
+function tryLogin(){
+  var u = document.getElementById('login-user').value.trim();
+  var p = document.getElementById('login-pass').value;
+  if (u===ADMIN_USER && p===ADMIN_PASS){
+    isAdmin = true; currentUser = { name:'Admin', tier:'admin' };
+    closeModal('loginModal');
+    showToast('👑 Welcome back, Admin!');
+    document.getElementById('btn-signin').textContent = '👑 Admin Panel';
+    document.getElementById('btn-signin').onclick = function(){ openModal('adminModal'); };
+    document.getElementById('btn-join').style.display = 'none';
+    document.getElementById('admin-pill').textContent = '👑 Admin Logged In';
+    updatePaidRows();
+    refreshTopicButtons();
+  } else if (u && p){
+    currentUser = { name:u, tier:'free' };
+    closeModal('loginModal');
+    showToast('✅ Signed in as '+u+'!');
+    document.getElementById('btn-signin').textContent = u;
+    document.getElementById('btn-join').style.display = 'none';
+    refreshTopicButtons();
+    updatePaidRows();
+  } else {
+    showToast('❌ Enter your username and password');
+  }
+}
+
+function registerUser(){
+  var username = document.getElementById('reg-user').value.trim();
+  var email    = document.getElementById('reg-email').value.trim();
+  var pass     = document.getElementById('reg-pass').value;
+  if (!username || !email || !pass){ showToast('❌ Fill in all fields'); return; }
+  if (pass.length < 6){ showToast('❌ Password must be at least 6 characters'); return; }
+  showToast('⏳ Creating account...');
+  sb.auth.signUp({
+    email: email,
+    password: pass,
+    options: { data: { username: username, tier: 'free' } }
+  }).then(function(res){
+    if (res.error){
+      showToast('❌ ' + res.error.message);
+    } else {
+      currentUser = { name: username, tier: 'free' };
+      isAdmin = false;
+      closeModal('registerModal');
+      showToast('🎮 Welcome, ' + username + '! Check your email to confirm your account.');
+      updateUI();
+    }
+  });
+}
+
+function userLogout(){
+  sb.auth.signOut().then(function(){
+    isAdmin = false; currentUser = { name:'Guest', tier:'free' };
+    closeModal('userMenuModal');
+    updateUI();
+    showToast('Signed out.');
+  });
+}
+
+function adminLogout(){
+  sb.auth.signOut().then(function(){
+    isAdmin = false; currentUser = { name:'Guest', tier:'free' };
+    closeModal('adminModal');
+    updateUI();
+    showToast('Signed out.');
+  });
+}
+
+// ══ RENAME ══
+function startRename(id){
+  var el = document.getElementById(id); if (!el) return;
+  var cur = el.textContent.trim();
+  var inp = document.createElement('input');
+  inp.className = 'rename-input'; inp.value = cur;
+  el.innerHTML = ''; el.appendChild(inp); inp.focus(); inp.select();
+  inp.addEventListener('blur', function(){ var v=inp.value.trim()||cur; el.textContent=v; showToast('Renamed to "'+v+'"'); });
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') inp.blur(); if(e.key==='Escape'){inp.value=cur;inp.blur();} });
+}
+
+// ══ PAYMENT ══
+var btcRates = { bronze:'0.000082', silver:'0.000197', gold:'0.000410', legend:'0.000820' };
+
+function switchPay(m){
+  document.getElementById('card-form').style.display  = m==='card' ? 'block' : 'none';
+  document.getElementById('btc-form').style.display   = m==='btc'  ? 'block' : 'none';
+  document.getElementById('btn-card').classList.toggle('active', m==='card');
+  document.getElementById('btn-btc').classList.toggle('active',  m==='btc');
+  if (m==='btc'){ startBtcTimer(); drawQR(); }
+}
+
+function updateBtcAmt(){
+  var t = tiers.find(function(x){ return x.id===selectedTier; });
+  if (!t || t.id==='free') return;
+  document.getElementById('btc-amount').textContent = (btcRates[t.id]||'0.000410')+' BTC';
+  document.getElementById('btc-usd').textContent    = '≈ '+t.price+' USD';
+}
+
+function drawQR(){
+  var cv = document.getElementById('btc-qr-canvas'); if (!cv) return;
+  var ctx = cv.getContext('2d');
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,150,150); ctx.fillStyle='#000';
+  var a = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+  for (var r=0;r<19;r++) for (var c=0;c<19;c++){ var code=a.charCodeAt((r*19+c)%a.length); if((code^(r*7+c*13))%3!==0) ctx.fillRect(c*8,r*8,8,8); }
+  [[0,0],[0,12],[12,0]].forEach(function(p){ ctx.fillStyle='#000';ctx.fillRect(p[1]*8,p[0]*8,56,56);ctx.fillStyle='#fff';ctx.fillRect(p[1]*8+8,p[0]*8+8,40,40);ctx.fillStyle='#000';ctx.fillRect(p[1]*8+16,p[0]*8+16,24,24); });
+}
+
+var _cdi = null;
+function startBtcTimer(){
+  clearInterval(_cdi); var s=900; var el=document.getElementById('btc-countdown');
+  _cdi = setInterval(function(){ if(s<=0){clearInterval(_cdi);el.textContent='00:00';return;} s--; el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }, 1000);
+}
+
+function copyAddr(){ navigator.clipboard.writeText('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh').then(function(){ showToast('₿ Address copied!'); }); }
+function formatCard(input){ var v=input.value.replace(/\D/g,'').substring(0,16); input.value=v.replace(/(.{4})/g,'$1 ').trim(); }
+
+
+var editModeActive = false;
+
+function toggleEditMode(){
+  if (!isAdmin){ showToast("🔒 Admin only"); return; }
+  editModeActive = !editModeActive;
+  var bar = document.getElementById('edit-mode-bar');
+  bar.classList.toggle('active', editModeActive);
+
+  document.querySelectorAll('[data-editable]').forEach(function(el){
+    el.contentEditable = editModeActive ? 'true' : 'false';
+    if (!editModeActive) el.classList.remove('editing');
+    el.onclick = editModeActive ? function(e){ e.stopPropagation(); } : null;
+  });
+
+  if (editModeActive){
+    showToast('✏️ Edit mode on — click any text to edit');
+    // Also make category names editable
+    document.querySelectorAll('.fr h3').forEach(function(el){
+      el.dataset.editable = '';
+      el.contentEditable = 'true';
+    });
+    document.querySelectorAll('.sec-label').forEach(function(el){
+      el.dataset.editable = '';
+      el.contentEditable = 'true';
+    });
+  } else {
+    document.querySelectorAll('.fr h3, .fr p, .sec-label').forEach(function(el){
+      el.contentEditable = 'false';
+    });
+    showToast('✅ Changes saved!');
+  }
+}
+
+// Highlight on focus
+document.addEventListener('focus', function(e){
+  if (e.target && e.target.dataset && e.target.dataset.editable !== undefined){
+    e.target.classList.add('editing');
+  }
+}, true);
+document.addEventListener('blur', function(e){
+  if (e.target && e.target.dataset && e.target.dataset.editable !== undefined){
+    e.target.classList.remove('editing');
+  }
+}, true);
+
+function refreshTopicButtons(){
+  var btns = document.querySelectorAll('.create-topic-btn');
+  btns.forEach(function(b){ b.style.display = isAdmin ? '' : 'none'; });
+}
+
+// ══ INIT ══
+updatePaidRows();
+refreshTopicButtons();
+loadTopics();
+</script>
+
+<!-- Edit Mode Bar -->
+<div class="edit-mode-bar" id="edit-mode-bar">
+  <div style="display:flex;align-items:center;gap:.75rem">
+    <span style="font-size:.8rem;font-weight:700;letter-spacing:1px;font-family:'Orbitron',monospace;color:#fff">✏️ EDIT MODE</span>
+    <span style="font-size:.75rem;color:rgba(255,255,255,.7)">Click any highlighted text to edit it directly</span>
+  </div>
+  <button class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:.78rem" onclick="toggleEditMode()">✅ Done Editing</button>
+</div>
+
+<!-- User Menu Modal -->
+<div class="modal-overlay" id="userMenuModal">
+  <div class="modal" style="max-width:360px">
+    <button class="modal-close" onclick="closeModal('userMenuModal')">✕</button>
+    <div class="modal-title">👤 My Account</div>
+    <div class="modal-sub" id="user-menu-name" style="color:var(--accent);font-size:1rem;font-weight:600"></div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1.25rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:.5rem">
+        <span style="font-size:.78rem;color:var(--muted)">Membership Tier</span>
+        <span id="user-menu-tier" style="font-size:.78rem;font-weight:700;color:var(--accent)"></span>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span style="font-size:.78rem;color:var(--muted)">Status</span>
+        <span style="font-size:.78rem;font-weight:700;color:var(--success)">Active</span>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;padding:.7rem;margin-bottom:.6rem" onclick="closeModal('userMenuModal');openModal('membershipModal')">⚡ Upgrade Membership</button>
+    <button class="btn btn-ghost" style="width:100%;padding:.7rem;color:var(--danger);border-color:rgba(239,68,68,.3)" onclick="userLogout()">Sign Out</button>
+  </div>
+</div>
+</body>
+</html>
